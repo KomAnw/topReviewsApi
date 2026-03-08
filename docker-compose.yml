@@ -1,0 +1,17 @@
+services:
+  mongodb:
+    image: mongo:7
+    container_name: top-api-mongodb
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "${MONGO_PORT:-27017}:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-admin}
+      MONGO_DB: ${MONGO_DB:-top-api}
+    volumes:
+      - mongodb_data:/data/db
+
+volumes:
+  mongodb_data:
