@@ -13,7 +13,7 @@ import { IdValidationPipe } from "src/pipes/id-validation.pipe";
 import { CreateReviewDto } from "./dto/create-review.dto";
 import { REVIEW_CONSTANTS } from "./review.constants";
 import { ReviewService } from "./review.service";
-
+@UseGuards(JwtGuard)
 @Controller("review")
 export class ReviewController {
   constructor(private readonly reviewService: ReviewService) {}
@@ -45,7 +45,6 @@ export class ReviewController {
     return deletedReviews;
   }
 
-  @UseGuards(JwtGuard)
   @Get("byProduct/:id")
   async getByProductId(@Param("id", IdValidationPipe) id: string) {
     return this.reviewService.findByProductId(id);

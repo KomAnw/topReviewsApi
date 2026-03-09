@@ -17,6 +17,8 @@ describe("AuthController", () => {
 
   const mockAuthService = {
     login: vi.fn(),
+    refreshTokens: vi.fn(),
+    logout: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -58,16 +60,83 @@ describe("AuthController", () => {
   });
 
   describe("login", () => {
-    it("should validate user and return access_token", async () => {
+    it("should validate user and return tokens", async () => {
       const dto = { login: "test@example.com", password: "password123" };
       mockUserService.validateUser.mockResolvedValue({ email: dto.login });
-      mockAuthService.login.mockResolvedValue({ access_token: "jwt-token" });
+      mockAuthService.login.mockResolvedValue({ accessToken: "jwt-token", refreshToken: "jwt-token" });
 
-      const result = await authController.login(dto);
+      const res = {
+        cookie: vi.fn(),
+      } as unknown as {
+        cookie: (name: string, value: string, options: unknown) => void;
+      };
+
+      const result = await authController.login(dto, res as never);
 
       expect(mockUserService.validateUser).toHaveBeenCalledWith(dto.login, dto.password);
       expect(mockAuthService.login).toHaveBeenCalledWith(dto.login);
-      expect(result).toEqual({ access_token: "jwt-token" });
+      expect(res.cookie).toHaveBeenCalledWith(
+        "refreshToken",
+        "jwt-token",
+        expect.objectContaining({
+          httpOnly: true,
+        }),
+      );
+      expect(result).toEqual({ accessToken: "jwt-token" });
+    });
+  });
+
+  describe("refreshTokens", () => {
+    it("should return new tokens", async () => {
+      mockAuthService.refreshTokens.mockResolvedValue({ accessToken: "new-access", refreshToken: "new-refresh" });
+
+      const req = {
+        cookies: {
+          refreshToken: "valid-token",
+        },
+      } as unknown as Request;
+
+      const res = {
+        cookie: vi.fn(),
+      } as unknown as {
+        cookie: (name: string, value: string, options: unknown) => void;
+      };
+
+      const result = await authController.refreshTokens(req as never, res as never);
+
+      expect(mockAuthService.refreshTokens).toHaveBeenCalledWith("valid-token");
+      expect(res.cookie).toHaveBeenCalledWith(
+        "refreshToken",
+        "new-refresh",
+        expect.objectContaining({
+          httpOnly: true,
+        }),
+      );
+      expect(result).toEqual({ accessToken: "new-access" });
+    });
+  });
+
+  describe("logout", () => {
+    it("should call authService.logout and return success", async () => {
+      const email = "test@example.com";
+      mockAuthService.logout.mockResolvedValue(undefined);
+
+      const res = {
+        clearCookie: vi.fn(),
+      } as unknown as {
+        clearCookie: (name: string, options: unknown) => void;
+      };
+
+      const result = await authController.logout(email, res as never);
+
+      expect(mockAuthService.logout).toHaveBeenCalledWith(email);
+      expect(res.clearCookie).toHaveBeenCalledWith(
+        "refreshToken",
+        expect.objectContaining({
+          httpOnly: true,
+        }),
+      );
+      expect(result).toEqual({ success: true });
     });
   });
 });

@@ -1,0 +1,13 @@
+node_modules
+dist
+.git
+.env
+*.md
+.gitignore
+Dockerfile
+docker-compose*.yml
+.dockerignore
+*.log
+coverage
+.nyc_output
+.vitest

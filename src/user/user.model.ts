@@ -10,6 +10,9 @@ export class UserModel {
 
   @Prop({ required: true })
   passwordHash: string;
+
+  @Prop()
+  refreshTokenHash?: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(UserModel);

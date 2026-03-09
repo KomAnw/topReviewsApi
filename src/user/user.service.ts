@@ -40,4 +40,21 @@ export class UserService {
 
     return user;
   }
+
+  async updateRefreshTokenHash(email: string, refreshToken: string | null) {
+    if (!refreshToken) {
+      return this.userModel.updateOne({ email }, { $set: { refreshTokenHash: null } }).exec();
+    }
+    const salt = await genSalt(10);
+    const hashToken = await hash(refreshToken, salt);
+    return this.userModel.updateOne({ email }, { $set: { refreshTokenHash: hashToken } }).exec();
+  }
+
+  async validateRefreshToken(email: string, refreshToken: string): Promise<boolean> {
+    const user = await this.findUser(email);
+    if (!user || !user.refreshTokenHash) {
+      return false;
+    }
+    return compare(refreshToken, user.refreshTokenHash);
+  }
 }
