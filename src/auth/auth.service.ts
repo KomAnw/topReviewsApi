@@ -39,11 +39,11 @@ export class AuthService {
       if (!isTokenValid) {
         throw new Error("Invalid refresh token");
       }
-      
+
       const tokens = await this.generateTokens(result.email);
       await this.userService.updateRefreshTokenHash(result.email, tokens.refreshToken);
       return tokens;
-    } catch (e) {
+    } catch {
       throw new UnauthorizedException(AUTH_CONSTANTS.INVALID_TOKEN);
     }
   }

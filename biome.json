@@ -6,7 +6,15 @@
     "useIgnoreFile": true
   },
   "files": {
-    "ignoreUnknown": false
+    "ignoreUnknown": false,
+    "includes": [
+      "**",
+      "!**/dist",
+      "!**/node_modules",
+      "!**/coverage",
+      "!**/*.config.js",
+      "!**/scripts"
+    ]
   },
   "formatter": {
     "enabled": true,
@@ -21,7 +29,8 @@
       "recommended": true,
       "correctness": {
         "noUnusedFunctionParameters": "warn",
-        "noUnusedVariables": "warn"
+        "noUnusedVariables": "off",
+        "noUnusedPrivateClassMembers": "off"
       },
       "style": {
         "useImportType": "off",

@@ -7,9 +7,7 @@ import { UserModel } from "./user.model";
 
 @Injectable()
 export class UserService {
-  constructor(
-    @InjectModel(UserModel.name) private userModel: Model<UserModel>,
-  ) {}
+  constructor(@InjectModel(UserModel.name) private userModel: Model<UserModel>) {}
 
   async findUser(email: string) {
     return this.userModel.findOne({ email }).exec();
@@ -22,10 +20,7 @@ export class UserService {
     return user.save();
   }
 
-  async validateUser(
-    email: string,
-    password: string,
-  ): Promise<Pick<UserModel, "email">> {
+  async validateUser(email: string, password: string): Promise<Pick<UserModel, "email">> {
     const user = await this.findUser(email);
 
     if (!user) {

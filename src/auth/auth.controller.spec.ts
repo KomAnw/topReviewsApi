@@ -63,7 +63,10 @@ describe("AuthController", () => {
     it("should validate user and return tokens", async () => {
       const dto = { login: "test@example.com", password: "password123" };
       mockUserService.validateUser.mockResolvedValue({ email: dto.login });
-      mockAuthService.login.mockResolvedValue({ accessToken: "jwt-token", refreshToken: "jwt-token" });
+      mockAuthService.login.mockResolvedValue({
+        accessToken: "jwt-token",
+        refreshToken: "jwt-token",
+      });
 
       const res = {
         cookie: vi.fn(),
@@ -88,7 +91,10 @@ describe("AuthController", () => {
 
   describe("refreshTokens", () => {
     it("should return new tokens", async () => {
-      mockAuthService.refreshTokens.mockResolvedValue({ accessToken: "new-access", refreshToken: "new-refresh" });
+      mockAuthService.refreshTokens.mockResolvedValue({
+        accessToken: "new-access",
+        refreshToken: "new-refresh",
+      });
 
       const req = {
         cookies: {

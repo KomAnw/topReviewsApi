@@ -41,8 +41,14 @@ describe("AuthService", () => {
 
       const result = await authService.login(email);
 
-      expect(mockJwtService.signAsync).toHaveBeenCalledWith({ email, type: "access" }, { expiresIn: "1h" });
-      expect(mockJwtService.signAsync).toHaveBeenCalledWith({ email, type: "refresh" }, { expiresIn: "7d" });
+      expect(mockJwtService.signAsync).toHaveBeenCalledWith(
+        { email, type: "access" },
+        { expiresIn: "1h" },
+      );
+      expect(mockJwtService.signAsync).toHaveBeenCalledWith(
+        { email, type: "refresh" },
+        { expiresIn: "7d" },
+      );
       expect(mockUserService.updateRefreshTokenHash).toHaveBeenCalledWith(email, "jwt-token");
       expect(result).toEqual({ accessToken: "jwt-token", refreshToken: "jwt-token" });
     });
@@ -56,9 +62,18 @@ describe("AuthService", () => {
       const result = await authService.refreshTokens("valid-refresh-token");
 
       expect(mockJwtService.verifyAsync).toHaveBeenCalledWith("valid-refresh-token");
-      expect(mockUserService.validateRefreshToken).toHaveBeenCalledWith(email, "valid-refresh-token");
-      expect(mockJwtService.signAsync).toHaveBeenCalledWith({ email, type: "access" }, { expiresIn: "1h" });
-      expect(mockJwtService.signAsync).toHaveBeenCalledWith({ email, type: "refresh" }, { expiresIn: "7d" });
+      expect(mockUserService.validateRefreshToken).toHaveBeenCalledWith(
+        email,
+        "valid-refresh-token",
+      );
+      expect(mockJwtService.signAsync).toHaveBeenCalledWith(
+        { email, type: "access" },
+        { expiresIn: "1h" },
+      );
+      expect(mockJwtService.signAsync).toHaveBeenCalledWith(
+        { email, type: "refresh" },
+        { expiresIn: "7d" },
+      );
       expect(mockUserService.updateRefreshTokenHash).toHaveBeenCalledWith(email, "jwt-token");
       expect(result).toEqual({ accessToken: "jwt-token", refreshToken: "jwt-token" });
     });
@@ -66,20 +81,26 @@ describe("AuthService", () => {
     it("should throw UnauthorizedException if token is not refresh token", async () => {
       mockJwtService.verifyAsync.mockResolvedValue({ email: "user@example.com", type: "access" });
 
-      await expect(authService.refreshTokens("access-token")).rejects.toThrow(UnauthorizedException);
+      await expect(authService.refreshTokens("access-token")).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
 
     it("should throw UnauthorizedException if token validation fails", async () => {
       mockJwtService.verifyAsync.mockResolvedValue({ email: "user@example.com", type: "refresh" });
       mockUserService.validateRefreshToken.mockResolvedValue(false);
 
-      await expect(authService.refreshTokens("invalid-refresh-token")).rejects.toThrow(UnauthorizedException);
+      await expect(authService.refreshTokens("invalid-refresh-token")).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
 
     it("should throw UnauthorizedException if token verification fails", async () => {
       mockJwtService.verifyAsync.mockRejectedValue(new Error("invalid"));
 
-      await expect(authService.refreshTokens("invalid-token")).rejects.toThrow(UnauthorizedException);
+      await expect(authService.refreshTokens("invalid-token")).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
   });
 
