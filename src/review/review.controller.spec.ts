@@ -60,7 +60,10 @@ describe("ReviewController", () => {
       const result = await reviewController.delete(id);
 
       expect(mockReviewService.delete).toHaveBeenCalledWith(id);
-      expect(result).toEqual(deletedReview);
+      expect(result).toEqual({
+        id: "507f1f77bcf86cd799439011",
+        message: REVIEW_CONSTANTS.DELETION_SUCCESS,
+      });
     });
 
     it("should throw NotFoundException when review not found", async () => {
