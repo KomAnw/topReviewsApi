@@ -9,6 +9,7 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { JwtGuard } from "src/auth/guards/jwt.guard";
+import { IdValidationPipe } from "src/pipes/id-validation.pipe";
 import { CreateReviewDto } from "./dto/create-review.dto";
 import { REVIEW_CONSTANTS } from "./review.constants";
 import { ReviewService } from "./review.service";
@@ -23,18 +24,18 @@ export class ReviewController {
   }
 
   @Delete(":id")
-  async delete(@Param("id") id: string) {
+  async delete(@Param("id", IdValidationPipe) id: string) {
     const deletedReview = await this.reviewService.delete(id);
 
     if (!deletedReview) {
       throw new NotFoundException(REVIEW_CONSTANTS.NOT_FOUND_BY_ID);
     }
 
-    return deletedReview;
+    return { id: deletedReview._id, message: REVIEW_CONSTANTS.DELETION_SUCCESS };
   }
 
   @Delete("deleteAllByProductId/:id")
-  async deleteAllByProductId(@Param("id") id: string) {
+  async deleteAllByProductId(@Param("id", IdValidationPipe) id: string) {
     const deletedReviews = await this.reviewService.deleteAllByProductId(id);
 
     if (!deletedReviews) {
@@ -46,7 +47,7 @@ export class ReviewController {
 
   @UseGuards(JwtGuard)
   @Get("byProduct/:id")
-  async getByProductId(@Param("id") id: string) {
+  async getByProductId(@Param("id", IdValidationPipe) id: string) {
     return this.reviewService.findByProductId(id);
   }
 }

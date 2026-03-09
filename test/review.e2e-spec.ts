@@ -133,7 +133,7 @@ describe("ReviewController (e2e)", () => {
         .set("Authorization", `Bearer ${authToken}`);
 
       expect(status).toBe(200);
-      expect(body._id).toBe(reviewId);
+      expect(body.id).toBe(reviewId);
 
       const byProduct = await request(app.getHttpServer())
         .get(`/review/byProduct/${productId}`)
