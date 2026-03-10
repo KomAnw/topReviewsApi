@@ -21,7 +21,8 @@
     "test:cov": "vitest run --coverage",
     "test:debug": "vitest run --inspect-brk --no-file-parallelism",
     "test:e2e": "vitest run --config vitest.e2e.config.ts",
-    "seed": "ts-node -r tsconfig-paths/register scripts/seed.ts"
+    "seed": "ts-node -r tsconfig-paths/register scripts/seed.ts",
+    "env:generate": "bash scripts/generate-env.sh"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
