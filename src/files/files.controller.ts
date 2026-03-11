@@ -24,4 +24,11 @@ export class FilesController {
   ): Promise<FileElementResponse[]> {
     return this.filesService.saveFilesPublic([file]);
   }
+
+  @Post("upload-image")
+  @HttpCode(200)
+  @UseInterceptors(FileInterceptor("file"))
+  async uploadImage(@UploadedFile() file: Express.Multer.File): Promise<FileElementResponse[]> {
+    return this.filesService.uploadImageWithVariants(file);
+  }
 }

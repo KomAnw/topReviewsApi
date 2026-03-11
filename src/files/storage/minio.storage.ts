@@ -30,7 +30,7 @@ export class MinioStorage implements FileStorage {
     });
 
     this.bucketName = bucketName;
-    this.publicEndpoint = publicEndpoint;
+    this.publicEndpoint = publicEndpoint.replace(/\/+$/, "");
   }
 
   private buildObjectName(params: FileUploadParams): string {

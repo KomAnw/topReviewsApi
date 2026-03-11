@@ -1,56 +1,56 @@
+## Top API: MinIO
+
+Проект использует MinIO как S3-совместимое хранилище файлов.
+
+Клиент получает прямой URL в MinIO и скачивает файл без проксирования через backend.
+
+## Быстрый старт
+
+1. Скопируйте `.env.example` в `.env`.
+2. Поднимите стек:
+
+```bash
+docker compose up -d --build
+```
+
+`minio-init` автоматически:
+- подключается к MinIO через `mc`;
+- создаёт bucket (если его нет);
+- включает публичный доступ `anonymous download` для bucket.
+
+## Прямой доступ к файлам
+
+После загрузки backend возвращает URL вида:
+
+- `http://localhost:9000/<bucket>/<object-key>`
+- пример: `http://localhost:9000/files/public/other/2026/03/10/<uuid>.png`
+
 ## Переменные окружения
 
-Все переменные окружения задаются в файле `.env` в корне проекта.
+Все переменные задаются в `.env`.
 
 ### Общие
 
-- **`PORT`**: порт HTTP‑сервера NestJS.  
-  Пример: `8000`. На этом порту приложение принимает входящие запросы.
+- `PORT` - HTTP-порт NestJS.
 
 ### MongoDB
 
-- **`MONGO_USER`**: имя пользователя MongoDB.  
-  Пример: `admin`. Используется для аутентификации к базе данных.
-
-- **`MONGO_PASSWORD`**: пароль пользователя MongoDB.  
-  Пример: `admin`. Используется вместе с `MONGO_USER`.
-
-- **`MONGO_HOST`**: хост MongoDB.  
-  Пример: `localhost` или имя сервиса в `docker-compose`.
-
-- **`MONGO_PORT`**: порт MongoDB.  
-  Пример: `27017`.
-
-- **`MONGO_DB`**: имя базы данных MongoDB, к которой будет подключаться приложение.  
-  Пример: `admin`.
+- `MONGO_USER`, `MONGO_PASSWORD`, `MONGO_HOST`, `MONGO_PORT`, `MONGO_DB`.
 
 ### JWT
 
-- **`JWT_SECRET`**: секретный ключ для подписания JWT‑токенов.  
-  Пример: `private-key-for-jwt`. Должен быть достаточно случайным и секретным в продакшене.
+- `JWT_SECRET`, `JWT_EXPIRES_IN`.
 
-- **`JWT_EXPIRES_IN`**: время жизни JWT‑токена.  
-  Пример: `1h`, `15m`, `7d`. Формат задаётся библиотекой, которая используется в модуле авторизации.
+### MinIO (backend)
 
-### MinIO
+- `MINIO_ENDPOINT` - host MinIO для SDK (`minio` в Docker-сети).
+- `MINIO_PORT` - порт S3 API MinIO (обычно `9000`).
+- `MINIO_ACCESS_KEY` - access key, которым backend пишет объекты.
+- `MINIO_SECRET_KEY` - secret key для backend.
+- `MINIO_BUCKET` - bucket для файлов.
+- `MINIO_PUBLIC_ENDPOINT` - публичная база для прямых ссылок (локально `http://localhost:9000`).
 
-Для работы загрузки файлов используются следующие переменные:
+### MinIO (docker)
 
-- **`MINIO_ENDPOINT`**: хост MinIO (без протокола и порта).  
-  Пример: `minio` или `localhost`. Используется SDK MinIO для подключения к серверу хранилища.
-
-- **`MINIO_PORT`**: порт MinIO.  
-  Пример: `9000`. Используется SDK MinIO для установления TCP‑подключения.
-
-- **`MINIO_ACCESS_KEY`**: access key пользователя MinIO.  
-  Пример: `minioadmin`. Используется как логин при аутентификации к MinIO.
-
-- **`MINIO_SECRET_KEY`**: secret key пользователя MinIO.  
-  Пример: `minioadmin`. Используется как пароль при аутентификации к MinIO.
-
-- **`MINIO_BUCKET`**: имя bucket’а, в который будут загружаться файлы.  
-  Пример: `files`. Если bucket не существует, он будет создан при первой загрузке.
-
-- **`MINIO_PUBLIC_ENDPOINT`**: публичный HTTP‑endpoint, по которому клиент сможет скачать файл.  
-  Пример для локальной разработки: `http://localhost:9000`.  
-  Используется только для формирования публичного URL, который возвращается после загрузки (`${MINIO_PUBLIC_ENDPOINT}/${MINIO_BUCKET}/...`).
+- `MINIO_ROOT_USER`, `MINIO_ROOT_PASSWORD` - root-учётка MinIO.
+- `MINIO_CONSOLE_PORT` - порт MinIO Console (`9001`).
